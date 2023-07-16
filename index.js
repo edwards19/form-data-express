@@ -21,19 +21,27 @@ const config = {
 app.set('view engine', 'ejs');
 app.set('views', config.dir.views);
 
+// body parsing
+app.use(express.urlencoded({ extended: true }));
+
 // render form
-app.get('/', (req, res) => {
-	res.render('form', {
-		title: 'Parse HTTP GET data',
-		data: req.query,
-	});
+// use .all to handle initial GET and POST
+app.all('/', (req, res, next) => {
+	if (req.method === 'GET' || req.method === 'POST') {
+		res.render('form', {
+			title: `Parse HTTP ${req.method.toUpperCase()} data`,
+			data: req.body,
+		});
+	} else {
+		next();
+	}
 });
 
 app.all('*', (req, res) => {
-    res.redirect('/');
-})
+	res.redirect('/');
+});
 
 // start server
 app.listen(config.port, () => {
-    console.log(`App listening on port ${config.port}`);
-})
+	console.log(`App listening on port ${config.port}`);
+});
