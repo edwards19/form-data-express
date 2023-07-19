@@ -3,6 +3,7 @@ import compression from 'compression';
 import formidable from 'formidable';
 import { fileURLToPath } from 'url';
 import { dirname, parse, sep } from 'path';
+import { deleteFiles } from './middleware/deleteFiles.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url)) + sep;
 
@@ -26,6 +27,9 @@ app.set('views', config.dir.views);
 
 // static assets
 app.use(express.static( config.dir.uploads ));
+
+// delete uploads files if 24 hours have passed
+app.use(deleteFiles);
 
 // body parsing
 // app.use(express.urlencoded({ extended: true })); we don't need this middleware since we use formidable
@@ -67,3 +71,5 @@ app.all('*', (req, res) => {
 app.listen(config.port, () => {
 	console.log(`App listening on port ${config.port}`);
 });
+
+export {config};
