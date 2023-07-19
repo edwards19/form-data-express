@@ -44,17 +44,16 @@ app.all('/', (req, res, next) => {
 			keepExtensions: true,
 		});
 		form.parse(req, (err, data, files) => {
-			console.log('data here', data);
 			if (err) {
 				next(err);
 				return;
 			}
-			if (files && files.image && files.image.size > 0) {
-				data.filename = files.image.originalFilename;
-				data.filetype = files.image.mimetype;
-				data.filesize = Math.ceil(files.image.size / 1024) + ' KB';
-				data.uploadto = files.image.filepath;
-				data.imageurl = '/' + parse(files.image.filepath).base;
+			if (files && files.image && files.image[0].size > 0) {
+				data.filename = files.image[0].originalFilename;
+				data.filetype = files.image[0].mimetype;
+				data.filesize = Math.ceil(files.image[0].size / 1024) + ' KB';
+				data.uploadto = files.image[0].filepath;
+				data.imageurl = '/' + parse(files.image[0].filepath).base;
 			}
 			res.render('form', { title: 'Parse HTTP POST file data', data });
 		});
